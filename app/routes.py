@@ -1,4 +1,5 @@
 from flask import Flask, request
+
 from app.database import task
 
 app = Flask(__name__)
@@ -8,8 +9,21 @@ app = Flask(__name__)
 def get_all_tasks():
     out = {}
     response = task.scan()
-    out['task'] = response
+    out['tasks'] = response
     return out
+
+
+@app.get('/tasks/<int:task_id>')
+def get_single_task(task_id):
+    out = {}
+    status = 404
+    response = task.scan_single(task_id)
+    if response:
+        out['task'] = response[0]
+        status = 200
+    else:
+        out['status'] = 'error'
+    return out, status
 
 
 @app.post('/tasks')

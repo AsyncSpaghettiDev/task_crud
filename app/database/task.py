@@ -17,7 +17,29 @@ def output_formatter(results):
 
 def scan():
     conn = get_db()
-    cursor = conn.execute("SELECT * FROM tasks WHERE active = 1", ())
+    statement = """
+        SELECT
+            *
+        FROM
+            tasks
+    """
+    cursor = conn.execute(statement, ())
+    results = cursor.fetchall()
+    cursor.close()
+    return output_formatter(results)
+
+
+def scan_single(task_id):
+    conn = get_db()
+    statement = """
+        SELECT
+           *
+        FROM
+            tasks
+        WHERE
+            id = ?
+    """
+    cursor = conn.execute(statement, (task_id,))
     results = cursor.fetchall()
     cursor.close()
     return output_formatter(results)
